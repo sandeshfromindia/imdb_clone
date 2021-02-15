@@ -1,0 +1,215 @@
+<div class="main-content" [hidden]="!ServerIndex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Server Master
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 10px; vertical-align: middle; cursor: pointer !important"
+                               title="Add" (click)="addServer()">add</i>
+                            <i *ngIf="IsExport" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Export" (click)="exportServer()">play_for_work</i>
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Bulk Upload" (click)="uploadServer()">import_export</i>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef> Action</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" title="Edit"
+                                                (click)="editServer(element.Id)"
+                                                class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ServerCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Server Code</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.ServerCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ServerDesc">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Server Description</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.ServerDesc}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ServerIP">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Server IP</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.ServerIP}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="FileUploaderPath">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> File Uploader Path</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.FileUploaderPath}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="AutoUploaderStatus">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Auto Uploader Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.AutoUploaderStatus; else elseBlock">Yes</div>
+                                        <ng-template #elseBlock>No</ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ReconExclusion">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Recon Exclusion</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.ReconExclusion; else elseBlock">Yes</div>
+                                        <ng-template #elseBlock>No</ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="MaxUserLimit">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Max User Limit</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.MaxUserLimit}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="IsActive">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.IsActive; else elseBlock">Active</div>
+                                        <ng-template #elseBlock>Inactive</ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content" [hidden]="!ServerCreate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Server Master</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="ServerForm">
+                            <mat-form-field class="example-full-width" hidden>
+                                <input matInput type="text" formControlName="Id">
+                            </mat-form-field>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Server Code" type="text"
+                                               formControlName="ServerCode" required>
+                                        <mat-error *ngIf="ServerCode.hasError('required')">
+                                            Server Code is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="ServerCode.hasError('pattern') && !ServerCode.hasError('required')">
+                                            Please enter a valid Server Code
+                                        </mat-error>
+                                        <mat-error *ngIf="ServerCode.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Server Description"
+                                                  formControlName="ServerDesc"></textarea>
+                                        <mat-error *ngIf="ServerDesc.hasError('pattern')">
+                                            Please enter a valid Server Description
+                                        </mat-error>
+                                        <mat-error *ngIf="ServerDesc.hasError('maxlength')">
+                                            This field should have less than 2000 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Server IP" type="text" formControlName="ServerIP"
+                                               required>
+                                        <mat-error *ngIf="ServerIP.hasError('required')">
+                                            Server IP is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="ServerIP.hasError('pattern') && !ServerIP.hasError('required')">
+                                            Please enter a valid Server IP
+                                        </mat-error>
+                                        <mat-error *ngIf="ServerIP.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="AutoUploaderStatus"
+                                                  (change)="onAutoUploaderStatusChange($event)"> Auto Uploader Status
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="File Uploader Path" type="text"
+                                               formControlName="FileUploaderPath">
+                                        <mat-error
+                                                *ngIf="FileUploaderPath.invalid"> {{ getFileUploaderPathErrorMessage() }} </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="ReconExclusion">
+                                        Recon Exclusion
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Max User Limit" type="text"
+                                               formControlName="MaxUserLimit" required>
+                                        <mat-error *ngIf="MaxUserLimit.hasError('required')">
+                                            Max User Limit is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="MaxUserLimit.hasError('pattern') && !MaxUserLimit.hasError('required')">
+                                            Please enter a valid Max User Limit
+                                        </mat-error>
+                                        <mat-error *ngIf="MaxUserLimit.hasError('maxlength')">
+                                            This field should have less than 3 digit
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="IsActive">Is Active
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="reset" matTooltip="Back Server"
+                                    class="btn btn-warning  pull-right"
+                                    (click)="backServer()">Back
+                            </button>
+                            <button mat-raised-button type="submit" matTooltip="Save Server"
+                                    class="btn btn-success  pull-right"
+                                    [disabled]="ServerForm.invalid" (click)="saveServer()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

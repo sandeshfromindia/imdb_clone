@@ -1,0 +1,40 @@
+<div class="content">
+    <h1>IMDB</h1>
+    <div class="main vlcone">
+        <div class="hotel-left">
+            <div class="pay_form">
+                <h2>Login Here</h2>
+                <form #form="ngForm" [formGroup]="LoginForm">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Email" type="text" formControlName="UserName" required>
+                        <mat-error *ngIf="UserName.hasError('required')">
+                            Email is <strong>required</strong>
+                        </mat-error>
+                        <mat-error *ngIf="UserName.hasError('pattern') && !UserName.hasError('required')">
+                            Please enter a valid Email
+                        </mat-error>
+                        <mat-error *ngIf="UserName.hasError('maxlength') && !UserName.hasError('required')">
+                            This field should have less than 100 characters
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'"
+                               formControlName="Password">
+                        <mat-icon matSuffix
+                                  (click)="hide = !hide"> {{ hide ? 'visibility_off' : 'visibility' }} </mat-icon>
+                    </mat-form-field>
+                    <button mat-raised-button type="submit" style="margin-top:20px;" Tooltip="Login"
+                            class="btn btn-info"
+                            [disabled]="LoginForm.invalid" (click)="loginUser()">Login
+                    </button>
+                </form>
+            </div>
+            <!-- <a href="#" (click)="forgotPassword()">Forgot Password</a> -->
+            <h3 class="forgotPassword" (click)="forgotPassword()">Forgot Password</h3>
+            <div class="clear"></div>
+        </div>
+        <div class="hotel-right">
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>

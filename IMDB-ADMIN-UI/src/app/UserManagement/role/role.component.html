@@ -1,0 +1,128 @@
+<div class="main-content" [hidden]="!RoleIndex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Role Master
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 10px; vertical-align: middle; cursor: pointer !important"
+                               title="Add" (click)="addRole()">add</i>
+                            <i *ngIf="IsExport" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Export" (click)="exportRole()">play_for_work</i>
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Bulk Upload" (click)="uploadRole()">import_export</i>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef> Action</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" title="Edit"
+                                                (click)="editRole(element.Id)"
+                                                class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="RoleCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Role Code</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.RoleCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="RoleDesc">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Role Description</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.RoleDesc}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="IsActive">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.IsActive; else elseBlock">Active</div>
+                                        <ng-template #elseBlock>Inactive</ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content" [hidden]="!RoleCreate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Role Master</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="RoleForm">
+                            <mat-form-field class="example-full-width" hidden>
+                                <input matInput type="text" formControlName="Id">
+                            </mat-form-field>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Role Code" type="text" formControlName="RoleCode"
+                                               required>
+                                        <mat-error *ngIf="RoleCode.hasError('required')">
+                                            Role Code is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="RoleCode.hasError('pattern') && !RoleCode.hasError('required')">
+                                            Please enter a valid Role Code
+                                        </mat-error>
+                                        <mat-error *ngIf="RoleCode.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Role Description"
+                                                  formControlName="RoleDesc"></textarea>
+                                        <mat-error *ngIf="RoleDesc.hasError('pattern')">
+                                            Please enter a valid Role Description
+                                        </mat-error>
+                                        <mat-error *ngIf="RoleDesc.hasError('maxlength')">
+                                            This field should have less than 2000 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="IsActive">Is Active
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="reset" matTooltip="Back Role"
+                                    class="btn btn-warning  pull-right" (click)="backRole()">Back
+                            </button>
+                            <button mat-raised-button type="submit" matTooltip="Save Role"
+                                    class="btn btn-success pull-right" [disabled]="RoleForm.invalid"
+                                    (click)="saveRole()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

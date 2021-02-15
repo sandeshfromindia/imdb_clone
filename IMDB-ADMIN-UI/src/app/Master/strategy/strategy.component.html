@@ -1,0 +1,209 @@
+<div class="main-content" [hidden]="!StrategyIndex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Strategy Master
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 10px; vertical-align: middle; cursor: pointer !important"
+                               title="Add" (click)="addStrategy()">add</i>
+                            <i *ngIf="IsExport" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Export" (click)="exportStrategy()">play_for_work</i>
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Bulk Upload" (click)="uploadStrategy()">import_export</i>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef> Action</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" title="Edit"
+                                                (click)="editStrategy(element.Id)"
+                                                class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="StrategyCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Strategy Code</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.StrategyCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="StrategyDesc">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Strategy Description</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.StrategyDesc }} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="LOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> LOB</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.LOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="SubLOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sub LOB</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.SubLOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="PlatformCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Platform</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.PlatformCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="IsActive">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.IsActive; else elseBlock"> Active</div>
+                                        <ng-template #elseBlock> Inactive</ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content" [hidden]="!StrategyCreate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Strategy Master</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="StrategyForm">
+                            <mat-form-field class="example-full-width" hidden>
+                                <input matInput type="text" formControlName="Id">
+                                <input matInput type="text" formControlName="LOBId">
+                                <input matInput type="text" formControlName="SubLOBId">
+                                <input matInput type="text" formControlName="PlatformId">
+                            </mat-form-field>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Strategy Code" type="text"
+                                               formControlName="StrategyCode" required>
+                                        <mat-error *ngIf="StrategyCode.hasError('required')">
+                                            Strategy Code is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="StrategyCode.hasError('pattern') && !StrategyCode.hasError('required')">
+                                            Please enter a valid Strategy Code
+                                        </mat-error>
+                                        <mat-error *ngIf="StrategyCode.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Strategy Description"
+                                                  formControlName="StrategyDesc"></textarea>
+                                        <mat-error *ngIf="StrategyDesc.hasError('pattern')">
+                                            Please enter a valid Strategy Description
+                                        </mat-error>
+                                        <mat-error *ngIf="StrategyDesc.hasError('maxlength')">
+                                            This field should have less than 2000 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="LOB" type="text" formControlName="LOB"
+                                               [matAutocomplete]="autoLOB"
+                                               (input)="inputLOB($event.target.value)" required>
+                                        <mat-autocomplete #autoLOB="matAutocomplete"
+                                                          (optionSelected)="selectedLOB($event.option.value)">
+                                            <mat-option *ngFor="let lob of filteredlobs | async" [value]="lob">
+                                                {{ lob.LOBCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="LOB.hasError('required')">
+                                            LOB is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Sub LOB" type="text" formControlName="SubLOB"
+                                               [matAutocomplete]="autoSubLOB" (input)="inputSubLOB($event.target.value)"
+                                               required>
+                                        <mat-autocomplete #autoSubLOB="matAutocomplete"
+                                                          (optionSelected)="selectedSubLOB($event.option.value)">
+                                            <mat-option *ngFor="let sublob of filteredsublobs | async" [value]="sublob">
+                                                {{ sublob.SubLOBCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="SubLOB.hasError('required')">
+                                            Sub LOB is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-chip-list #platformList>
+                                            <mat-chip *ngFor="let platform of platforms" [selectable]="true"
+                                                      [removable]="true"
+                                                      (removed)="removePlatform(platform)">
+                                                {{ platform.PlatformCode }}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Platform" #platformInput formControlName="Platform"
+                                                   [matAutocomplete]="autoPlatform" [matChipInputFor]="platformList"
+                                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                   [matChipInputAddOnBlur]="true"
+                                                   (matChipInputTokenEnd)="addPlatform($event)">
+                                        </mat-chip-list>
+                                        <mat-autocomplete #autoPlatform="matAutocomplete"
+                                                          (optionSelected)="selectedPlatform($event)">
+                                            <mat-option *ngFor="let platform of filteredPlatforms | async"
+                                                        [value]="platform">
+                                                {{ platform.PlatformCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            Platform is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="IsActive">Is Active
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="reset" matTooltip="Back Strategy"
+                                    class="btn btn-warning  pull-right"
+                                    (click)="backStrategy()">Back
+                            </button>
+                            <button mat-raised-button type="submit" matTooltip="Save Strategy"
+                                    class="btn btn-success pull-right"
+                                    [disabled]="StrategyForm.invalid" (click)="saveStrategy()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

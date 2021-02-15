@@ -1,0 +1,8 @@
+{
+  "SERVER_URL": "http://localhost:3000/v1/",
+  "API_KEY": "GCMUDiuY5a7WvyUNt9n3QztToSHzK7Uj",
+  "THEME_COLORS": {
+    "PRIMARY": "#007bff",
+    "SECONDARY": "#fc3"
+  }
+}

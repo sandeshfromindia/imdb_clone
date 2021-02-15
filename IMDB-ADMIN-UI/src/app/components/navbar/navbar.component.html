@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-transparent  navbar-absolute fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-wrapper">
+            <div class="navbar-minimize">
+                <button class="btn btn-just-icon btn-white btn-fab btn-round mat-raised-button"
+                        (click)="sidebarMiniToggle()">
+                    <span class="mat-button-wrapper">
+                        <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                        <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                    </span>
+                    <div class="mat-button-ripple mat-ripple" matripple></div>
+                    <div class="mat-button-focus-overlay"></div>
+                </button>
+            </div>
+            <a _ngcontent-c3="" class="navbar-brand"
+               style="color: #888686;font-size: 23px;font-weight: 400;">{{getTitle()}}</a>
+        </div>
+        <button mat-raised-button class="navbar-toggler" type="button" (click)="sidebarToggle()">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navigation">
+            <form #form="ngForm" [formGroup]="RoleForm">
+                <mat-form-field>
+                    <mat-select formControlName="RoleId" required (selectionChange)="setDefaultRole($event.value)"
+                                style="font-size: 14px;">
+                        <mat-option *ngFor="let role of roles" [value]="role.Id">
+                            {{role.RoleCode}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </form>
+            <a class="" style="color:gray;  margin: 10px; margin-top: 20px;" href="javascript:void(0)">
+                <i class="material-icons" style="color:#f0685c !important; margin-left:10px;" title="Help">help</i>
+                <p>
+                    <span class="d-lg-none d-md-block"></span>
+                </p>
+            </a>
+            <a><span class="d-md-block"
+                     style="color:#5c595d; margin: 10px; font-size:16px; font-weight:540; margin-right: 0px; ">{{getUserName()}}</span></a>
+            <span class="d-md-block" style="color:gray;  margin: 10px; font-size:15px;"></span>
+
+            <a style="color:gray; margin: 10px; margin-top: 5px; margin-left: 0px; " href="javascript:void(0);"
+               (click)="logout()">
+                <i class="material-icons" style="color:#828a92 !important;" title="Logout">lock</i>
+            </a>
+
+        </div>
+    </div>
+</nav>

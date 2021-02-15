@@ -1,0 +1,142 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">UI Role Configuration</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="UIRoleConfigForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-label>Role</mat-label>
+                                        <mat-select formControlName="RoleId" required
+                                                    (selectionChange)="loadUIRoleMapping($event.value)">
+                                            <mat-option *ngFor="let role of roleList" [value]="role.Id">
+                                                {{role.RoleCode}}
+                                            </mat-option>
+                                        </mat-select>
+                                        <mat-error *ngIf="RoleId.hasError('required')">
+                                            Please select UI
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table-responsive">
+                                        <mat-table #table [dataSource]="dataSource" formArrayName="UIRoleMap">
+                                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                                            <mat-row [ngClass]="{'child-menu': row.get('ParentId').value != '0'}"
+                                                     *matRowDef="let row; let i = index; columns: displayedColumns;"
+                                                     (click)="onEdit(row)"></mat-row>
+
+                                            <!-- Role Column -->
+                                            <ng-container matColumnDef="RoleId">
+                                                <mat-header-cell *matHeaderCellDef> UI</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-form-field class="example-full-width" hidden>
+                                                        <input matInput type="text" formControlName="UIId">
+                                                        <input matInput type="text" formControlName="ParentId">
+                                                    </mat-form-field>
+                                                    <input matInput placeholder="UI" type="text" formControlName="UI">
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Viewer Column -->
+                                            <ng-container matColumnDef="Viewer">
+                                                <mat-header-cell *matHeaderCellDef> Viewer</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Viewer" color='custom'
+                                                                      formControlName="Viewer">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Maker Column -->
+                                            <ng-container matColumnDef="Maker">
+                                                <mat-header-cell *matHeaderCellDef> Maker</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Maker" color='custom'
+                                                                      formControlName="Maker">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Checker Column -->
+                                            <ng-container matColumnDef="Checker">
+                                                <mat-header-cell *matHeaderCellDef> Checker</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Checker" color='custom'
+                                                                      formControlName="Checker">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Requester Column -->
+                                            <ng-container matColumnDef="Requester">
+                                                <mat-header-cell *matHeaderCellDef> Requester</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Requester" color='custom'
+                                                                      formControlName="Requester">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Export Column -->
+                                            <ng-container matColumnDef="Export">
+                                                <mat-header-cell *matHeaderCellDef> Export</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Export" color='custom'
+                                                                      formControlName="Export">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Delete Column -->
+                                            <ng-container matColumnDef="Delete">
+                                                <mat-header-cell *matHeaderCellDef> Delete</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Delete" color='custom'
+                                                                      formControlName="Delete">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                            <!-- Upload Column -->
+                                            <ng-container matColumnDef="Upload">
+                                                <mat-header-cell *matHeaderCellDef> Upload</mat-header-cell>
+                                                <mat-cell *matCellDef="let element; let index = index;"
+                                                          [formGroupName]="index">
+                                                    <mat-slide-toggle [checked]="element.Upload" color='custom'
+                                                                      formControlName="Upload">
+                                                    </mat-slide-toggle>
+                                                </mat-cell>
+                                            </ng-container>
+
+                                        </mat-table>
+                                    </div>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="submit" matTooltip="Save SBU"
+                                    class="btn btn-success pull-right" [disabled]="UIRoleConfigForm.invalid"
+                                    (click)="saveUIRoleConfig()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

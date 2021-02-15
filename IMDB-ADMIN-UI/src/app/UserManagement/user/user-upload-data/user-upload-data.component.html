@@ -1,0 +1,42 @@
+<input type="file" #file style="display: none" (click)='file.value = null' (change)="onFilesAdded()" required/>
+<div mat-dialog-content fxFlex>
+    <div class="card">
+        <div class="card-body">
+            <mat-dialog-actions class="actions">
+                <button mat-raised-button color="primary" class="add-files-btn" (click)="addFiles()">
+                    Upload File
+                </button>
+                <button mat-raised-button color="primary" class="add-files-btn" (click)="exportTemplate()">
+                    Template
+                </button>
+                <button mat-raised-button color="warn" mat-button mat-dialog-close>Cancel</button>
+                <button mat-raised-button color="primary" (click)="validate()"> Validate</button>
+                <button mat-raised-button color="primary" *ngIf="validateSuccessful" (click)="upload()">Upload Valid
+                    Records
+                </button>
+            </mat-dialog-actions>
+            <mat-list>
+                <mat-list-item *ngFor="let file of files">
+                    <h4 mat-line>{{file.name}}</h4>
+                </mat-list-item>
+            </mat-list>
+
+            <div class="mat-elevation-z8" *ngIf="uploadData">
+                <table mat-table [dataSource]="dataSource" class="table table-responsive">
+                    <ng-container [matColumnDef]="col" *ngFor="let col of columns">
+                        <th mat-header-cell *matHeaderCellDef> {{col}} </th>
+                        <td mat-cell [matTooltip]="element[col]" *matCellDef="let element">
+                            <span *ngIf="col != 'Error'"> {{ element[col] }} </span>
+                            <span *ngIf="col == 'Error'" style="color:red"> {{ element[col] }} </span>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+
+        </div>
+    </div>
+
+</div>

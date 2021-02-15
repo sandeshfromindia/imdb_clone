@@ -1,0 +1,342 @@
+<div class="main-content" [hidden]="!UserIndex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">User Master
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 10px; vertical-align: middle; cursor: pointer !important"
+                               title="Add" (click)="addUser()">add</i>
+                            <i *ngIf="IsExport" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Export" (click)="exportUser()">play_for_work</i>
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Bulk Upload" (click)="uploadUser()">import_export</i>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef> Action</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" title="Edit"
+                                                (click)="editUser(element.Id)"
+                                                class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="LoginId">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Login Id</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.LoginId}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="EmpCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee Code</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.EmpCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="EmpName">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Employee Name</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.EmpName}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="LOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> LOB</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.LOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="SubLOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sub LOB</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.SubLOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ActivityCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Approver</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.ActivityCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="RoleCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Role</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.RoleCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="IsActive">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.IsActive; else elseBlock">Active</div>
+                                        <ng-template #elseBlock>Inactive</ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content" [hidden]="!UserCreate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">User Master</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="UserForm">
+                            <mat-form-field class="example-full-width" hidden>
+                                <input matInput type="text" formControlName="Id">
+                                <input matInput type="text" formControlName="LOBId">
+                                <input matInput type="text" formControlName="SubLOBId">
+                                <input matInput type="text" formControlName="ActivityId">
+                                <input matInput type="text" formControlName="RoleId">
+                            </mat-form-field>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-checkbox class="example-full-width" formControlName="ADUser"
+                                                  (change)="onADUserChange($event)">AD
+                                        User
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <mat-form-field class="example-full-width" [hidden]="!UserForm.value.ADUser">
+                                        <input matInput placeholder="Search Name" type="text"
+                                               formControlName="SearchName"
+                                               [matAutocomplete]="searchname" (input)="inputUser($event.target.value)">
+                                        <mat-autocomplete #searchname="matAutocomplete"
+                                                          (optionSelected)="selectedUser($event.option.value)">
+                                            <mat-option *ngFor="let user of users" [value]="user">
+                                                {{ user.displayName }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Login Id" type="text" formControlName="LoginId"
+                                               required
+                                               [readonly]="Readonly">
+                                        <mat-error *ngIf="LoginId.hasError('required')">
+                                            Login Id is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="LoginId.hasError('pattern') && !LoginId.hasError('required')">
+                                            Please enter a valid Login Id
+                                        </mat-error>
+                                        <mat-error *ngIf="LoginId.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width" [hidden]="!UserForm.value.ADUser">
+                                        <input matInput placeholder="Employee Code" type="text"
+                                               formControlName="EmpCode"
+                                               [readonly]="Readonly">
+                                        <mat-error *ngIf="EmpCode.invalid"> {{ getEmpCodeErrorMessage() }} </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Employee Name" type="text"
+                                               formControlName="EmpName" required
+                                               [readonly]="Readonly">
+                                        <mat-error *ngIf="EmpName.hasError('required')">
+                                            Employee Name is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="EmpName.hasError('pattern') && !EmpName.hasError('required')">
+                                            Please enter a valid Employee Name
+                                        </mat-error>
+                                        <mat-error *ngIf="EmpName.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Email Id" type="text" formControlName="EmailId"
+                                               required
+                                               [readonly]="Readonly">
+                                        <mat-error *ngIf="EmailId.hasError('required')">
+                                            Email Id is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="EmailId.hasError('email') && !EmailId.hasError('required')">
+                                            Please enter a valid Email Id
+                                        </mat-error>
+                                        <mat-error *ngIf="EmailId.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Entity" type="text" formControlName="Entity"
+                                               required
+                                               [readonly]="Readonly">
+                                        <mat-error *ngIf="Entity.hasError('required')">
+                                            Entity is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error *ngIf="Entity.hasError('pattern') && !Entity.hasError('required')">
+                                            Please enter a valid Entity
+                                        </mat-error>
+                                        <mat-error *ngIf="Entity.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-chip-list #lobList>
+                                            <mat-chip *ngFor="let lob of lobs" [selectable]="true" [removable]="true"
+                                                      (removed)="removeLOB(lob)">
+                                                {{ lob.LOBCode }}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="LOB" #lobInput formControlName="LOB"
+                                                   [matAutocomplete]="autoLob"
+                                                   [matChipInputFor]="lobList"
+                                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                   [matChipInputAddOnBlur]="true"
+                                                   (matChipInputTokenEnd)="addLOB($event)">
+                                        </mat-chip-list>
+                                        <mat-autocomplete #autoLob="matAutocomplete"
+                                                          (optionSelected)="selectedLOB($event)">
+                                            <mat-option *ngFor="let lob of filteredLobs | async" [value]="lob">
+                                                {{ lob.LOBCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            LOB is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-chip-list #sublobList>
+                                            <mat-chip *ngFor="let sublob of sublobs" [selectable]="true"
+                                                      [removable]="true"
+                                                      (removed)="removeSubLOB(sublob)">
+                                                {{ sublob.SubLOBCode }}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Sub LOB" #sublobInput formControlName="SubLOB"
+                                                   [matAutocomplete]="autoSubLob"
+                                                   [matChipInputFor]="sublobList"
+                                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                   [matChipInputAddOnBlur]="true"
+                                                   (matChipInputTokenEnd)="addSubLOB($event)">
+                                        </mat-chip-list>
+                                        <mat-autocomplete #autoSubLob="matAutocomplete"
+                                                          (optionSelected)="selectedSubLOB($event)">
+                                            <mat-option *ngFor="let sublob of filteredSubLobs | async" [value]="sublob">
+                                                {{ sublob.SubLOBCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            Sub LOB is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-chip-list #activityList>
+                                            <mat-chip *ngFor="let activity of activities" [selectable]="true"
+                                                      [removable]="true"
+                                                      (removed)="removeActivity(activity)">
+                                                {{ activity.ActivityCode }}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Approver" #activityInput formControlName="Activity"
+                                                   [matAutocomplete]="autoActivity" [matChipInputFor]="activityList"
+                                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                   [matChipInputAddOnBlur]="true"
+                                                   (matChipInputTokenEnd)="addActivity($event)">
+                                        </mat-chip-list>
+                                        <mat-autocomplete #autoActivity="matAutocomplete"
+                                                          (optionSelected)="selectedActivity($event)">
+                                            <mat-option *ngFor="let activity of filteredActivities | async"
+                                                        [value]="activity">
+                                                {{ activity.ActivityCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <!-- <mat-error>
+                                          Approver is <strong>required</strong>
+                                        </mat-error> -->
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="AllTerminalAccess">All
+                                        Terminal Access
+                                    </mat-checkbox>
+                                </div>
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="TerminalMapping">Terminal
+                                        Mapping
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <mat-chip-list #roleList>
+                                            <mat-chip *ngFor="let role of roles" [selectable]="true" [removable]="true"
+                                                      (removed)="removeRole(role)">
+                                                {{ role.RoleCode }}
+                                                <mat-icon matChipRemove>cancel</mat-icon>
+                                            </mat-chip>
+                                            <input placeholder="Role" #roleInput formControlName="Role"
+                                                   [matAutocomplete]="autoRole"
+                                                   [matChipInputFor]="roleList"
+                                                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                   [matChipInputAddOnBlur]="true"
+                                                   (matChipInputTokenEnd)="addRole($event)">
+                                        </mat-chip-list>
+                                        <mat-autocomplete #autoRole="matAutocomplete"
+                                                          (optionSelected)="selectedRole($event)">
+                                            <mat-option *ngFor="let role of filteredRoles | async" [value]="role">
+                                                {{ role.RoleCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error>
+                                            Role is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="IsActive">Is Active
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="reset" title="Back User" class="btn btn-warning  pull-right"
+                                    (click)="backUser()">Back
+                            </button>
+                            <button mat-raised-button type="submit" title="Save User" class="btn btn-success pull-right"
+                                    [disabled]="UserForm.invalid" (click)="saveUser()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

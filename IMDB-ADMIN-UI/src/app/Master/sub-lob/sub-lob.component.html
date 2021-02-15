@@ -1,0 +1,188 @@
+<div class="main-content" [hidden]="!SubLOBIndex">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Sub LOB Master
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 10px; vertical-align: middle; cursor: pointer !important"
+                               title="Add" (click)="addSubLOB()">add</i>
+                            <i *ngIf="IsExport" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Export" (click)="exportSubLOB()">play_for_work</i>
+                            <i *ngIf="IsMaker" class="material-icons"
+                               style="font-size: 24px  !important; margin-left: 15px; vertical-align: middle; cursor: pointer !important"
+                               title="Bulk Upload" (click)="uploadSublob()">import_export</i>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <mat-form-field>
+                                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                            </mat-form-field>
+                            <table mat-table [dataSource]="dataSource" matSort>
+                                <ng-container matColumnDef="Id">
+                                    <th mat-header-cell *matHeaderCellDef> Action</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <button mat-raised-button type="button" title="Edit"
+                                                (click)="editSubLOB(element.Id)"
+                                                class="btn btn-primary btn-link btn-sm btn-just-icon">
+                                            <i class="material-icons">edit</i>
+                                        </button>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="SubLOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sub LOB Code</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.SubLOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="SubLOBDesc">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Sub LOB Description</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.SubLOBDesc}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="LOBCode">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> LOB</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.LOBCode}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="ValidityLimits">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Validity Limits</th>
+                                    <td mat-cell *matCellDef="let element"> {{element.ValidityLimits}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="DefaultInitialApprover">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Default Initial Approver</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.DefaultInitialApprover; else elseBlock">Yes</div>
+                                        <ng-template #elseBlock>No</ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="IsActive">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Status</th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <div *ngIf="element.IsActive; else elseBlock">Active</div>
+                                        <ng-template #elseBlock>Inactive</ng-template>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content" [hidden]="!SubLOBCreate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-Grid">
+                        <h4 class="card-title">Sub LOB Master</h4>
+                        <p class="card-category"></p>
+                    </div>
+                    <div class="card-body">
+                        <form #form="ngForm" [formGroup]="SubLOBForm">
+                            <mat-form-field class="example-full-width" hidden>
+                                <input matInput type="text" formControlName="Id">
+                                <input matInput type="text" formControlName="LOBId">
+                            </mat-form-field>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Sub LOB Code" type="text"
+                                               formControlName="SubLOBCode" required>
+                                        <mat-error *ngIf="SubLOBCode.hasError('required')">
+                                            Sub LOB Code is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="SubLOBCode.hasError('pattern') && !SubLOBCode.hasError('required')">
+                                            Please enter a valid Sub LOB Code
+                                        </mat-error>
+                                        <mat-error *ngIf="SubLOBCode.hasError('maxlength')">
+                                            This field should have less than 100 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput placeholder="Sub LOB Description"
+                                                  formControlName="SubLOBDesc"></textarea>
+                                        <mat-error *ngIf="SubLOBDesc.hasError('pattern')">
+                                            Please enter a valid Sub LOB Description
+                                        </mat-error>
+                                        <mat-error *ngIf="SubLOBDesc.hasError('maxlength')">
+                                            This field should have less than 2000 characters
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="LOB" type="text" formControlName="LOB"
+                                               [matAutocomplete]="autoLOB"
+                                               (input)="inputLOB($event.target.value)" required>
+                                        <mat-autocomplete #autoLOB="matAutocomplete"
+                                                          (optionSelected)="selectedLOB($event.option.value)">
+                                            <mat-option *ngFor="let lob of filteredlobs | async" [value]="lob">
+                                                {{ lob.LOBCode }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                        <mat-error *ngIf="LOB.hasError('required')">
+                                            LOB is <strong>required</strong>
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Validity Limits" type="text"
+                                               formControlName="ValidityLimits" required>
+                                        <mat-error *ngIf="ValidityLimits.hasError('required')">
+                                            Validity Limits is <strong>required</strong>
+                                        </mat-error>
+                                        <mat-error
+                                                *ngIf="ValidityLimits.hasError('pattern') && !ValidityLimits.hasError('required')">
+                                            Please enter a valid Validity Limits
+                                        </mat-error>
+                                        <mat-error *ngIf="ValidityLimits.hasError('maxlength')">
+                                            This field should have less than or equal to 3 digit
+                                        </mat-error>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="DefaultInitialApprover">
+                                        Default Initial Approver
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8" style="margin-bottom: 15px;">
+                                    <mat-checkbox class="example-full-width" formControlName="IsActive">Is Active
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                            <button mat-raised-button type="reset" matTooltip="Back Sub LOB"
+                                    class="btn btn-warning  pull-right"
+                                    (click)="backSubLOB()">Back
+                            </button>
+                            <button mat-raised-button type="submit" matTooltip="Save Sub LOB"
+                                    class="btn btn-success  pull-right"
+                                    [disabled]="SubLOBForm.invalid" (click)="saveSubLOB()">SAVE
+                            </button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

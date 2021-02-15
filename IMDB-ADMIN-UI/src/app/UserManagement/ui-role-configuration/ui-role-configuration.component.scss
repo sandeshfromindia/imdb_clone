@@ -1,0 +1,101 @@
+mat-form-field[hidden] {
+  display: none !important;
+}
+
+mat-header-cell {
+  justify-content: center;
+  // font-style: solid;
+  font-weight: bold;
+  // flex: 0 0 10px;
+  border-bottom-width: 1px;
+  // border-bottom-style: solid;
+  // border-bottom-color: lightgrey;
+}
+
+.child-menu {
+  background-color: #ffeae8
+}
+
+.mat-column-Role,
+.mat-column-Severity {
+  flex: 0 0 225px;
+  justify-content: center;
+}
+
+.mat-column-Level {
+  flex: 0 0 125px;
+  justify-content: center;
+}
+
+.mat-column-Viewer,
+.mat-column-Checker,
+.mat-column-Maker,
+.mat-column-Requester,
+.mat-column-Export,
+.mat-column-Delete,
+.mat-column-Upload {
+  flex: 0 0 100px;
+  justify-content: center;
+}
+
+.mat-header-cell {
+  font-size: 14 !important;
+  font-size: 14px;
+  color: #f1695d;
+  font-weight: 400;
+}
+
+
+/* offsets the header by the same amount of size/padding the sort button occupies */
+
+.mat-sort-header-container {
+  margin-left: 18px;
+}
+
+.mat-row,
+.mat-header-row {
+  border-bottom-width: 0px;
+}
+
+
+/* CSS to change Default/'Accent' color */
+
+::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: blue;
+  /*replace with your color*/
+}
+
+::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: rgb(146, 164, 172);
+  /*replace with your color*/
+}
+
+
+/* CSS to change 'Primary' color */
+
+::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: green;
+}
+
+::ng-deep .mat-slide-toggle.mat-primary.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  // background-color: #ff99ff;
+  background-color: red;
+}
+
+
+/* CSS to change 'Warn' color */
+
+::ng-deep .mat-slide-toggle.mat-warn.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: red;
+}
+
+::ng-deep .mat-slide-toggle.mat-warn.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #ffe066;
+}
+
+
+/* CSS to change 'Custom' color */
+
+::ng-deep .mat-slide-toggle.mat-custom.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: #00d46a;
+}
